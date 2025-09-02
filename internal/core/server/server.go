@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"fomrs/internal/api/health"
+	"fomrs/internal/api/v1/forms"
 	"fomrs/internal/core/router"
 	"fomrs/internal/core/settings"
 
@@ -35,6 +36,9 @@ func setUpRouter() *gin.Engine {
 
 	// Rutas de health
 	health.SetupHealthModule(r)
+
+	// Rutas de forms
+	forms.SetupFormsModule(r)
 
 	return r
 }
