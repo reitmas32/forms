@@ -22,8 +22,7 @@ type ErrorDTO struct {
 
 func GetDTO[K DTO](ctx *gin.Context, cc *customctx.CustomContext) *K {
 
-	entry, done := logger.FromContextWithExit(ctx.Request.Context())
-	defer done()
+	entry := logger.FromContext(ctx.Request.Context())
 
 	var dto K
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
@@ -49,8 +48,7 @@ func GetDTO[K DTO](ctx *gin.Context, cc *customctx.CustomContext) *K {
 
 func GetDTOWithResponse[K DTO](ctx *gin.Context, cc *customctx.CustomContext) utils.Response[K] {
 
-	entry, done := logger.FromContextWithExit(ctx.Request.Context())
-	defer done()
+	entry := logger.FromContext(ctx.Request.Context())
 
 	var dto K
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
@@ -101,8 +99,7 @@ func makeResponseError[K DTO](err error, dto K) utils.Response[K] {
 
 func GetAuthToken(ctx *gin.Context) utils.Result[string] {
 
-	entry, done := logger.FromContextWithExit(ctx.Request.Context())
-	defer done()
+	entry := logger.FromContext(ctx.Request.Context())
 
 	token := ctx.GetHeader("Authorization")
 
@@ -138,8 +135,7 @@ func GetAuthToken(ctx *gin.Context) utils.Result[string] {
 
 func GetAuthTokenWithEarlyResponse(ctx *gin.Context, cc *customctx.CustomContext) utils.Result[string] {
 
-	entry, done := logger.FromContextWithExit(ctx.Request.Context())
-	defer done()
+	entry := logger.FromContext(ctx.Request.Context())
 
 	token := ctx.GetHeader("Authorization")
 

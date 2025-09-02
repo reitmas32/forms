@@ -18,8 +18,7 @@ func (c *CustomApiClient) DELETE(
 ) utils.Result[CustomApiResponse] {
 
 	url := c.base_url + encodeRequestPath(request.Path)
-	entry, done := logger.FromContextWithExit(ctx.Context())
-	defer done()
+	entry := logger.FromContext(ctx.Context())
 	entry.Info("Make DELETE request to ", url)
 
 	if request.Debug {

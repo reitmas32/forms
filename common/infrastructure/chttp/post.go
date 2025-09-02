@@ -19,8 +19,7 @@ func (c *CustomApiClient) POST(
 ) utils.Result[CustomApiResponse] {
 
 	url := c.base_url + request.Path
-	entry, done := logger.FromContextWithExit(ctx.Context())
-	defer done()
+	entry := logger.FromContext(ctx.Context())
 	entry.Info("Make POST request to ", url)
 
 	var jsonBody []byte

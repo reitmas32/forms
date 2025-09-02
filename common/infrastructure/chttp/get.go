@@ -47,8 +47,7 @@ func (c *CustomApiClient) GET(
 ) utils.Result[CustomApiResponse] {
 
 	url := c.base_url + encodeRequestPath(request.Path)
-	entry, done := logger.FromContextWithExit(ctx.Context())
-	defer done()
+	entry := logger.FromContext(ctx.Context())
 	entry.Info("Make GET request to ", url)
 
 	if request.Debug {

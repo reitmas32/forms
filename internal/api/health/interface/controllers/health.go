@@ -20,8 +20,7 @@ func NewHealthController() *HealthController {
 // GetHealth
 func (c *HealthController) GetHealth(ctx *gin.Context) {
 
-	entry, done := logger.FromContextWithExit(ctx)
-	defer done()
+	entry := logger.FromContext(ctx)
 
 	entry.Info("Health check")
 

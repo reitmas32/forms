@@ -137,8 +137,7 @@ func (m *MongoRepository[T]) Update(ctx context.Context, entity T) error {
 // UpdateFields recibe el ID en hex string, aplica los updates y devuelve el objeto actualizado.
 func (m *MongoRepository[T]) UpdateFields(ctx context.Context, id string, updates map[string]interface{}) utils.Result[T] {
 
-	entry, done := logger.FromContextWithExit(ctx)
-	defer done()
+	entry := logger.FromContext(ctx)
 	entry.Info("Updating fields for document")
 
 	var updated T
