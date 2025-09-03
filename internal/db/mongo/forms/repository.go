@@ -8,11 +8,11 @@ import (
 // Ropository of specific Entity
 // --------------------------------------
 type FormsMongoRepository struct {
-	*ppmongo.MongoRepository[FormModel]
+	*ppmongo.MongoRepository[FormModel, FormListModel]
 }
 
 func NewFormsMongoRepository(uri string, dbName string, collectionName string) *FormsMongoRepository {
 	return &FormsMongoRepository{
-		MongoRepository: ppmongo.NewMongoRepository[FormModel](uri, dbName, collectionName),
+		MongoRepository: ppmongo.NewMongoRepository[FormModel, FormListModel](uri, dbName, collectionName),
 	}
 }

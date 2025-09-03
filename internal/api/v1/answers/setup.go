@@ -33,5 +33,5 @@ func SetupAnswersModule(r *gin.Engine) {
 	// Routes
 	answers := r.Group("/v1/answers")
 	answers.POST("", controller.Create)
-
+	answers.GET("/:id", controller.Retrieve)
 }
