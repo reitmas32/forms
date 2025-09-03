@@ -42,6 +42,7 @@ var QuestionTypes = []QuestionType{
 type Validator interface {
 	Name() string
 	IsValid(value string) bool
+	Description() string
 }
 
 // ========== Implementaciones ==========
@@ -54,6 +55,10 @@ func (t TextValidator) IsValid(value string) bool {
 	return strings.TrimSpace(value) != ""
 }
 
+func (t TextValidator) Description() string {
+	return "Generic text (not empty)"
+}
+
 // Texto largo (> 20 chars por ejemplo)
 type TextLongValidator struct{}
 
@@ -62,12 +67,20 @@ func (t TextLongValidator) IsValid(value string) bool {
 	return len(strings.TrimSpace(value)) > 20
 }
 
+func (t TextLongValidator) Description() string {
+	return "Long text (> 20 chars)"
+}
+
 // Texto corto (< 50 chars por ejemplo)
 type TextShortValidator struct{}
 
 func (t TextShortValidator) Name() string { return string(QuestionTypeTextShort) }
 func (t TextShortValidator) IsValid(value string) bool {
 	return len(strings.TrimSpace(value)) > 0 && len(value) <= 50
+}
+
+func (t TextShortValidator) Description() string {
+	return "Short text (< 50 chars)"
 }
 
 // Email
@@ -79,18 +92,28 @@ func (e EmailValidator) IsValid(value string) bool {
 	return re.MatchString(value)
 }
 
+func (e EmailValidator) Description() string {
+	return "Email (valid format)"
+}
+
 // Radio (valor debe estar en un set predefinido, aquí simulamos)
-type RadioValidator struct{}
+type RadioValidator struct {
+	Options []string
+}
 
 func (r RadioValidator) Name() string { return string(QuestionTypeRadio) }
 func (r RadioValidator) IsValid(value string) bool {
-	options := []string{"op1", "op2", "op3"}
+	options := r.Options
 	for _, o := range options {
 		if value == o {
 			return true
 		}
 	}
 	return false
+}
+
+func (r RadioValidator) Description() string {
+	return "Radio (value must be in a predefined set, here we simulate)"
 }
 
 // File (validamos extensión simple)
@@ -108,6 +131,10 @@ func (f FileValidator) IsValid(value string) bool {
 	return false
 }
 
+func (f FileValidator) Description() string {
+	return "File (valid extension)"
+}
+
 // Boolean
 type BooleanValidator struct{}
 
@@ -116,12 +143,18 @@ func (b BooleanValidator) IsValid(value string) bool {
 	return value == "true" || value == "false"
 }
 
+func (b BooleanValidator) Description() string {
+	return "Boolean (true or false)"
+}
+
 // Select (igual que radio pero puede ser otra lista)
-type SelectValidator struct{}
+type SelectValidator struct {
+	Options []string
+}
 
 func (s SelectValidator) Name() string { return string(QuestionTypeSelect) }
 func (s SelectValidator) IsValid(value string) bool {
-	options := []string{"a", "b", "c"}
+	options := s.Options
 	for _, o := range options {
 		if value == o {
 			return true
@@ -130,12 +163,18 @@ func (s SelectValidator) IsValid(value string) bool {
 	return false
 }
 
+func (s SelectValidator) Description() string {
+	return "Select (same as radio but can be another list)"
+}
+
 // Checkbox (múltiples valores separados por coma, todos deben ser válidos)
-type CheckboxValidator struct{}
+type CheckboxValidator struct {
+	Options []string
+}
 
 func (c CheckboxValidator) Name() string { return string(QuestionTypeCheckbox) }
 func (c CheckboxValidator) IsValid(value string) bool {
-	options := []string{"x", "y", "z"}
+	options := c.Options
 	values := strings.Split(value, ",")
 	if len(values) == 0 {
 		return false
@@ -156,6 +195,10 @@ func (c CheckboxValidator) IsValid(value string) bool {
 	return true
 }
 
+func (c CheckboxValidator) Description() string {
+	return "Checkbox (multiple values separated by comma, all must be valid)"
+}
+
 // Dropdown (igual que select pero distinta lista de opciones)
 type DropdownValidator struct{}
 
@@ -170,6 +213,10 @@ func (d DropdownValidator) IsValid(value string) bool {
 	return false
 }
 
+func (d DropdownValidator) Description() string {
+	return "Dropdown (same as select but different list of options)"
+}
+
 // Fecha (YYYY-MM-DD)
 type DateValidator struct{}
 
@@ -177,6 +224,10 @@ func (d DateValidator) Name() string { return string(QuestionTypeDate) }
 func (d DateValidator) IsValid(value string) bool {
 	_, err := time.Parse("2006-01-02", value)
 	return err == nil
+}
+
+func (d DateValidator) Description() string {
+	return "Date (YYYY-MM-DD)"
 }
 
 // ========== Mapa de validadores ==========

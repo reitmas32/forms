@@ -200,11 +200,16 @@ func (m *MongoRepository[T]) Delete(ctx context.Context, id string) error {
 func (m *MongoRepository[T]) Find(ctx context.Context, id string) utils.Result[T] {
 	var result T
 
+	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return utils.Result[T]{Err: cerrs.NewCustomError(http.StatusInternalServerError, fmt.Errorf("error al convertir el id: %w", err).Error(), "mongo.find")}
+	}
+
 	// Crear el filtro basado en el _id
-	filter := bson.M{"_id": id}
+	filter := bson.M{"_id": _id}
 
 	// Ejecutar la búsqueda en la colección
-	err := m.Collection.FindOne(ctx, filter).Decode(&result)
+	err = m.Collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return utils.Result[T]{Err: cerrs.NewCustomError(http.StatusInternalServerError, fmt.Errorf("no se encontró documento con id %s", id).Error(), "mongo.find")}

@@ -25,6 +25,10 @@ func (c *AnswerController) Create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(dto.StatusCode, dto.ToMapWithCustomContext(cc))
+	command := dto.Data.ToCommand()
+
+	response := c.service.Create(cc, &command)
+
+	ctx.JSON(response.StatusCode, response.ToMapWithCustomContext(cc))
 
 }

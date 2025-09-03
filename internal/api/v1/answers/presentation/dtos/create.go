@@ -1,6 +1,11 @@
 package dtos
 
-import "errors"
+import (
+	"common/utils/ctypes"
+	"errors"
+	"fomrs/internal/api/v1/answers/domain/commands"
+	"fomrs/internal/api/v1/answers/domain/entities"
+)
 
 type AnswerDTO struct {
 	QuestionID string   `json:"question_id" binding:"required"`
@@ -13,6 +18,15 @@ func (a AnswerDTO) Validate() error {
 		return errors.New("answer or values are required")
 	}
 	return nil
+}
+
+func (a AnswerDTO) ToEntity() entities.AnswerEntity {
+
+	return entities.AnswerEntity{
+		QuestionID: a.QuestionID,
+		Answer:     a.Answer,
+		Values:     a.Values,
+	}
 }
 
 type CreateAnswerDTO struct {
@@ -28,4 +42,18 @@ func (c CreateAnswerDTO) Validate() error {
 		}
 	}
 	return nil
+}
+
+func (dto CreateAnswerDTO) ToCommand() commands.ResponseCommand {
+
+	return commands.ResponseCommand{
+		FormID: dto.FormID,
+		UserID: dto.UserID,
+		Responses: ctypes.Map(
+			dto.Responses,
+			func(answer AnswerDTO) entities.AnswerEntity {
+				return answer.ToEntity()
+			},
+		),
+	}
 }
